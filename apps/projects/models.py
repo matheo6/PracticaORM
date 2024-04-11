@@ -18,7 +18,7 @@ class Task(models.Model):
         "Lw":"Low"        
     }
     description= models.CharField(max_length=250)
-    priority=models.CharField(max_length=120,choices=prioritys,default="LW")
+    priority= models.CharField(max_length=120,choices=prioritys,default="LW")
     end_date= models.DateTimeField()
     project = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
 
