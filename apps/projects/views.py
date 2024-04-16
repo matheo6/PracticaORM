@@ -4,34 +4,37 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import *
-
+from .serializers import ProjectSerializer,ProjectSerializerModel,TaskSerializerModel,CommentSerializerModel
 # Create your views here.
 from datetime import datetime
+from rest_framework.viewsets import ModelViewSet
 
+class ProjectViewSet(ModelViewSet):
+    queryset= Project.objects.all()
+    serializer_class= ProjectSerializerModel
+
+class TaskViewSet(ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class= TaskSerializerModel
+
+class CommentViewSet(ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class= CommentSerializerModel
+
+    
 class ProjectAPIView(APIView):
     def get(self, request):
         projects= Project.objects.all()
-
-
-        data= [
-            {
-                "id": project.id,
-                "name": project.name
-            }
-            for project in projects
-        ]
-
-        return Response(data)
+        serializer= ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
     
     def post(self,request):
 
         print(request.data)
         project= Project()
-        project.name= request.data.get('name',"")
-        project.init_date= datetime.now()
-        end_date= request.data.get('end_date',"")
-        project.end_date= datetime.strptime(end_date, '%d-%m-%Y %H:%M:%S')
-        project.save()
+        serializer= ProjectSerializer(data= request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({})
     
     def delete(self,request):

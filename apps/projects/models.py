@@ -5,7 +5,7 @@ from apps.users.models import User
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=60,null=False,blank=False)
-    init_date= models.DateTimeField()
+    init_date= models.DateTimeField(auto_now_add=True)
     end_date= models.DateTimeField()
     
     def __str__(self) -> str:
