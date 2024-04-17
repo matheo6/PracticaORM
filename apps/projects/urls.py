@@ -1,7 +1,7 @@
 from django.urls import path,include
 
-from .views import ProjectAPIView,ProjectViewSet,TaskViewSet,CommentViewSet
-from .views import TASKAPIREView
+from .views import ProjectViewSet,TaskViewSet,CommentViewSet
+#from .views import ProjectAPIView,TASKAPIREView
 
 from rest_framework.routers import DefaultRouter
 

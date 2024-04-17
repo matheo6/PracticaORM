@@ -31,12 +31,6 @@ class ProjectSerializer(serializers.Serializer):
     end_date = serializers.DateTimeField()
 
 
-    def validate_name(self,value):
-        if "mateo" in value:
-            raise serializers.ValidationError("el nombre mateo no puede estar en el nombre del proyecto")
-        print("Pasando Por validacion de nombre")
-        return value
-
     def validate(self, attrs):
         #if attrs.get("end_date")< datetime.now():
         #    raise serializers.ValidationError("The end date must be older than actually date")

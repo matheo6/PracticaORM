@@ -2,26 +2,57 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import *
 from .serializers import ProjectSerializer,ProjectSerializerModel,TaskSerializerModel,CommentSerializerModel
+from .permissions import IsMemberOrOwner
 # Create your views here.
 from datetime import datetime
-from rest_framework.viewsets import ModelViewSet
+
 
 class ProjectViewSet(ModelViewSet):
     queryset= Project.objects.all()
     serializer_class= ProjectSerializerModel
+    permission_classes=[
+        IsAuthenticated
+    ]
 
 class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class= TaskSerializerModel
+    permission_classes=[
+        IsAuthenticated,
+        IsMemberOrOwner
+    ]
+
+    def filter_queryset(self, queryset):
+        request_user=self.request.user
+        queryset= queryset.filter(ownerstasks__user= request_user)
+        return queryset
+
+
+    @action(detail=True,methods=['post'])
+    def complete_task(self, request, pk=None):
+        task = self.get_object()
+        task.is_complete= True
+        task.save()
+        task_data= self.get_serializer_class()(task).data
+        return Response(task_data)
+
 
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class= CommentSerializerModel
+    permission_classes=[
+        IsAuthenticated
+    ]
 
-    
+
+"""
 class ProjectAPIView(APIView):
     def get(self, request):
         projects= Project.objects.all()
@@ -98,4 +129,4 @@ class TASKAPIREView(APIView):
             "id":task.id,
             "description":task.description
         })
-        
+"""

@@ -14,7 +14,7 @@ class CommendAdmin(admin.ModelAdmin):
     list_display= ["id", "task","content","init_date"]
 
 class Members(admin.ModelAdmin):
-    list_display= ["rol", "date","user","project"]
+    list_display= ["rol", "date_joined","user","project"]
 class Owners(admin.ModelAdmin):
     list_display=["user","task"]
 
@@ -22,4 +22,4 @@ admin.site.register(Project,ProjectsAmdin)
 admin.site.register(Task, ProjectsTask)
 admin.site.register(Comment, CommendAdmin)
 admin.site.register(Member, Members)
-admin.site.register(Owner,Owners)
+admin.site.register(OwnersTask,Owners)

@@ -4,6 +4,7 @@ from django.db import models
 from apps.users.models import User
 # Create your models here.
 class Project(models.Model):
+    owner= models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
     name = models.CharField(max_length=60,null=False,blank=False)
     init_date= models.DateTimeField(auto_now_add=True)
     end_date= models.DateTimeField()
@@ -21,10 +22,11 @@ class Task(models.Model):
     priority= models.CharField(max_length=120,choices=prioritys,default="LW")
     end_date= models.DateTimeField()
     project = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
+    is_complete = models.BooleanField(default=False)
+    ownerstasks= models.ForeignKey(User, on_delete=models.DO_NOTHING,null=True)
 
 class Comment(models.Model):
     
-
     init_date= models.DateTimeField()
     content= models.CharField(max_length=120)
     task= models.ForeignKey(Task, on_delete=models.DO_NOTHING)
@@ -41,12 +43,12 @@ class Member(models.Model):
         
     }
     rol= models.CharField(max_length=60,choices=rols,default="DEV")
-    date= models.DateTimeField()
+    date_joined= models.DateTimeField(null=True)
     user=models.ForeignKey(User,on_delete=models.DO_NOTHING)
     project = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
+    
 
 
-
-class Owner(models.Model):
+class OwnersTask(models.Model):
     task= models.ForeignKey(Task, on_delete=models.DO_NOTHING)
     user=models.ForeignKey(User, on_delete=models.DO_NOTHING)
