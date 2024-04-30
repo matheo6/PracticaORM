@@ -6,9 +6,11 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from .models import *
-from .serializers import ProjectSerializer,ProjectSerializerModel,TaskSerializerModel,CommentSerializerModel
+from .serializers import ProjectSerializer,ProjectSerializerModel,TaskSerializerModel,CommentSerializerModel,TaskDetailSerializerModel
 from .permissions import IsMemberOrOwner
 # Create your views here.
 from datetime import datetime
@@ -25,15 +27,33 @@ class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class= TaskSerializerModel
     permission_classes=[
-        IsAuthenticated,
-        IsMemberOrOwner
+        IsAuthenticated
     ]
 
-    def filter_queryset(self, queryset):
-        request_user=self.request.user
-        queryset= queryset.filter(ownerstasks__user= request_user)
-        return queryset
+    filter_backends=[DjangoFilterBackend]
+    filterset_fields=['project_id']
 
+
+    def get_permissions(self):
+        if self.action== "create":
+            return super().get_permissions() + [IsMemberOrOwner()]
+
+        return super().get_permissions()
+
+
+    def get_serializer_class(self):
+        if self.request.query_params.get("detail"):
+            return TaskDetailSerializerModel
+        return super().get_serializer_class()
+    
+
+    def filter_queryset(self, queryset):
+
+        request_user=self.request.user
+        queryset=super().filter_queryset(queryset)
+        queryset= queryset.filter(ownerstask__user= request_user)
+        return queryset
+    
 
     @action(detail=True,methods=['post'])
     def complete_task(self, request, pk=None):

@@ -11,6 +11,8 @@ class TaskSerializerModel(serializers.ModelSerializer):
         model= Task
         fields= "__all__"
 
+
+
 class CommentSerializerModel(serializers.ModelSerializer):
     class Meta:
         model= Comment
@@ -40,3 +42,17 @@ class ProjectSerializer(serializers.Serializer):
         Project(**validated_data).save()
         
         return self.data
+
+class TaskDetailSerializerModel(serializers.ModelSerializer):
+
+    project = ProjectSerializer()
+
+    class Meta:
+        model= Task
+        fields= [
+            "id",
+            "description",
+            "end_date",
+            "is_complete",
+            "project",
+        ]

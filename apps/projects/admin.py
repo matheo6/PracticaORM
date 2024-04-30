@@ -4,7 +4,7 @@ from .models import *
 
 # Register your models here.
 class ProjectsAmdin(admin.ModelAdmin):
-    list_display = ["name","init_date","end_date"]
+    list_display = ["id","name","init_date","end_date"]
 
 class ProjectsTask(admin.ModelAdmin):
     list_display= ["id", "project","description","end_date"]

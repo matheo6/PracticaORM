@@ -23,7 +23,10 @@ class Task(models.Model):
     end_date= models.DateTimeField()
     project = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
     is_complete = models.BooleanField(default=False)
-    ownerstasks= models.ForeignKey(User, on_delete=models.DO_NOTHING,null=True)
+    #ownerstasks= models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+
+    def __str__(self) -> str:
+        return self.description
 
 class Comment(models.Model):
     
